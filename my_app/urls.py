@@ -34,6 +34,7 @@ urlpatterns = [
     path('check_login',hv.check_login, name='check_login'),
     path('creates', hv.creates, name='creates'),
     path('login', hv.login, name='login'),
+    path('orders', hv.orders, name='orders'),
     path('signups', hv.signups, name='signups'),
     path('otp', hv.otp, name='otp'),
     path('check_otp', hv.check_otp, name='check_otp'),

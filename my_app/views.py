@@ -431,7 +431,7 @@ def address(request):
                     status = "success"
                 )
                 k.delete()
-            return redirect("shoping_cart")
+            return redirect("orders")
 
         context = {"get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist": get_wishlist,
                   "get_wishlist_count": get_wishlist_count,"get_address":get_address,
@@ -499,6 +499,20 @@ def delete_address(request,id):
     else:
         return render(request,"login.html")
 
+def orders(request):
+    if 'email' in request.session:
+        uid = signup.objects.get(email= request.session['email'])
+        get_order  = order.objects.filter(user_id=uid)
+        get_cart  = add_to_cart.objects.filter(user_id=uid)
+        get_cart_count = add_to_cart.objects.filter(user_id=uid).count()
+        get_wishlist = wish_list.objects.filter(user_id = uid)
+        get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
+
+        
+        contaxt = {"get_order": get_order, "uid": uid, "get_cart": get_cart, "get_cart_count" :get_cart_count,
+                   "get_wishlist": get_wishlist, "get_wishlist_count": get_wishlist_count}
+    return render(request, "order.html", contaxt)
+
 def login(request):
     return render(request, "login.html")
 
@@ -509,7 +523,7 @@ def reset_pass(request):
     uid = signup.objects.get(email=request.session['email'])
     get_cart = add_to_cart.objects.filter(user_id=uid)
 
-    context = {"get_cart": get_cart} 
+    context = {"get_cart": get_cart,} 
     return render(request, 'reset_pass.html',context)
 
 def creates(request):

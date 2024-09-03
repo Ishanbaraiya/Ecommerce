@@ -103,7 +103,7 @@ class Billing_detail(models.Model):
     def __str__(self) -> str:
         return self.user_id.name
     
-choice = (("On the way", "On the way"),("Delivered", "Delivered"),("Cancelled","cancelled"),("Returned","Returned"))
+choice = (("success", "success") ,("On the way", "On the way"),("Delivered", "Delivered"),("Cancelled","cancelled"),("Returned","Returned"))
 class order(models.Model):
     user_id = models.ForeignKey(signup,on_delete=models.CASCADE,null=True,blank=True)
     address_id = models.ForeignKey(Billing_detail,on_delete=models.CASCADE,null=True)
