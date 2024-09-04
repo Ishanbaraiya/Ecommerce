@@ -21,6 +21,10 @@ def index(request):
         get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
         get_wishlist = wish_list.objects.filter(user_id = uid)
         get_wishlist1 = wish_list.objects.filter(user_id = uid).values_list('products_id',flat=True)
+        all_product = []
+        for i in get_cart:
+            all_product.append(i.total_prize)
+        get_subtotal = sum(all_product)
 
         if sort_order:
             if sort_order == 'name_asc':
@@ -34,8 +38,7 @@ def index(request):
         else:
             product = products.objects.all()
 
-        contaxt={"uid" : uid, "mid" : mid, "product" : product,"get_color_category":get_color_category, "get_cart" : get_cart,
-                 "get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1}
+        contaxt={"uid" : uid, "mid" : mid, "product" : product,"get_color_category":get_color_category,             "get_cart":get_cart,"get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1, "get_subtotal": get_subtotal}
         return render(request, "index.html",contaxt) 
     else:
         return render(request, "login.html") 
@@ -428,7 +431,8 @@ def address(request):
                     quantity = k.quantity,
                     price = k.price,
                     total_price = k.price * k.quantity,
-                    status = "success"
+                    status = "success",
+                    date = timezone.now()
                 )
                 k.delete()
             return redirect("orders")
