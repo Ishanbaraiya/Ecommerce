@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <!-- get data -->
-                {% if get_cart %}    
+                {% if get_address %}    
                 <form action=" {% url 'address' %} " method="POST">
                     {% csrf_token %}
                     <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_bilBagOBVTi4lE"

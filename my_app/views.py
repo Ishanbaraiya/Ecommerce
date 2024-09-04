@@ -245,14 +245,22 @@ def shoping_cart(request):
         get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
         get_wishlist = wish_list.objects.filter(user_id = uid)
         all_product = []
-        dilivery_chag = 100
+        dilivery_chag = 0
         discount = 0
         total_amount = 0
 
         for i in get_cart:
             all_product.append(i.total_prize)
         get_subtotal = sum(all_product)
-        total_amount = get_subtotal + dilivery_chag + discount
+        if get_subtotal <= 100 and get_subtotal >= 0:
+            dilivery_chag = 30
+            total_amount = get_subtotal + dilivery_chag + discount
+        elif get_subtotal >= 100:
+            dilivery_chag = 50
+            total_amount = get_subtotal + dilivery_chag + discount
+        else:
+            dilivery_chag = 10
+            total_amount = get_subtotal + dilivery_chag + discount
         context = {"get_cart":get_cart,"get_cart_count":get_cart_count,"get_subtotal":get_subtotal, "discount": discount,
                    "get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist, "dilivery_chag": dilivery_chag, "total_amount": total_amount }
 
@@ -333,13 +341,24 @@ def coupon_apply(request):
         get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
         cart_product_total_price = []
         get_subtotal = 0
-        dilivery_chag = 100
+        dilivery_chag = 0
 
         for i in get_cart:
             cart_product_total_price.append(i.total_prize)
         get_subtotal = sum(cart_product_total_price)
-        total_amount = get_subtotal + dilivery_chag
-        discount = 0
+        if get_subtotal <= 100 and get_subtotal >= 0:
+            dilivery_chag = 30
+            total_amount = get_subtotal + dilivery_chag 
+            discount = 0
+
+        elif get_subtotal >= 100:
+            dilivery_chag = 50
+            total_amount = get_subtotal + dilivery_chag  
+            discount = 0
+        else:
+            dilivery_chag = 10
+            total_amount = get_subtotal + dilivery_chag
+            discount = 0
 
         if request.POST:
             coupon =  request.POST['code']
@@ -384,21 +403,27 @@ def address(request):
         get_address = Billing_detail.objects.filter(user_id = uid)
  
         all_product = []
-        dilivery_chag = 100
+        dilivery_chag = 0
         discount = 0
         total_amount = 0
 
         for i in get_cart:
             all_product.append(i.total_prize)
         get_subtotal = sum(all_product)
-        total_amount = get_subtotal + dilivery_chag + discount
+        if get_subtotal <= 100 and get_subtotal >= 0:
+            dilivery_chag = 30
+            total_amount = get_subtotal + dilivery_chag + discount
+        elif get_subtotal >= 100:
+            dilivery_chag = 50
+            total_amount = get_subtotal + dilivery_chag + discount
+        else:
+            dilivery_chag = 10
+            total_amount = get_subtotal + dilivery_chag + discount
 
         if get_subtotal == 0 and "discount" in request.session:
             dilivery_chag = 0
             total_amount = 0
             del request.session['discount']
-        else:
-            dilivery_chag = 100
 
         if "discount" in request.session:
             discount = request.session.get("discount")
