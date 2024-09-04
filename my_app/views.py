@@ -435,7 +435,7 @@ def address(request):
 
         context = {"get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist": get_wishlist,
                   "get_wishlist_count": get_wishlist_count,"get_address":get_address,
-                  "get_subtotal": get_subtotal, "total_amount": total_amount, "dilivery_chag": dilivery_chag, "discount": discount
+                  "get_subtotal": get_subtotal, "total_amount": total_amount, "dilivery_chag": dilivery_chag, "discount": discount,"response":response
                   }
         return render(request,"address.html",context)
     else:
