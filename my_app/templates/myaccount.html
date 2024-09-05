@@ -1,0 +1,124 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+<br><br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        function toggleEdit() {
+            var editForm = document.getElementById("editForm");
+            var displayForm = document.getElementById("displayForm");
+            var editButton = document.getElementById("editButton");
+            var saveButton = document.getElementById("saveButton");
+
+            if (editForm.style.display === "none") {
+                editForm.style.display = "block";
+                displayForm.style.display = "none";
+                editButton.style.display = "none";
+                saveButton.style.display = "block";
+            } else {
+                editForm.style.display = "none";
+                displayForm.style.display = "block";
+                editButton.style.display = "block";
+                saveButton.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+
+<!--start page content-->
+<div class="page-content">
+    <section class="section-padding mt-5">
+        <div class="container">
+            <div class="d-flex align-items-center px-3 py-2 border mb-4">
+                <div class="text-start">
+                    <h4 class="mb-0 h4 fw-bold">User Profile</h4>
+                </div>
+                <div class="ms-auto">
+                    <!-- Edit Button -->
+                    <button id="editButton" class="btn btn-outline-primary" onclick="toggleEdit()">Edit</button>
+                    <!-- Save Button -->
+                    <button id="saveButton" class="btn btn-outline-success" style="display:none;" form="editProfileForm">Save Changes</button>
+                </div>
+            </div>
+
+            <!-- Display User Information (View Mode) -->
+            <div id="displayForm" style="display: block;">
+                <div class="row g-4">
+                    <div class="col-12 col-lg-8 col-xl-8">
+                        <h6 class="fw-bold mb-3 py-2 px-3 bg-light">Personal Information</h6>
+                        {% if get_address %}
+                            {% for i in get_address %}
+                        <div class="card rounded-0 mb-3">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Full Name:</label>
+                                    <p>{{i.full_name}}</p>
+                                </div>
+                                <div class="mb-3">
+                                    {% if request.session.email %}
+                                    <label class="fw-bold">Email:</label>
+                                    <p>{{request.session.email }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Phone Number:</label>
+                                    <p>{{ i.mobile }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <!-- Edit User Information (Edit Mode) -->
+            {% for i in get_address%}
+            <div id="editForm" style="display: none;">
+                <form id="editProfileForm" action="{% url 'update_myaccount' i.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-8 col-xl-8">
+                            <h6 class="fw-bold mb-3 py-2 px-3 bg-light">Edit Personal Information</h6>
+                            <div class="card rounded-0 mb-3">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="fw-bold">Full Name:</label>
+                                        <input type="text" class="form-control" name="name" value="{{ i.full_name }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold">Email:</label>
+                                        {% if request.session.email %}
+                                        <input type="email" class="form-control" name="email" value="{{ request.session.email }}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold">Phone Number:</label>
+                                        <input type="text" class="form-control" name="mobile_number" value="{{ i.mobile }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end row-->
+                </form>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+</div>
+<!--end page content-->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+{% endblock %}

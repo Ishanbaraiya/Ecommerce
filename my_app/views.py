@@ -38,10 +38,10 @@ def index(request):
         else:
             product = products.objects.all()
 
-        contaxt={"uid" : uid, "mid" : mid, "product" : product,"get_color_category":get_color_category,             "get_cart":get_cart,"get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1, "get_subtotal": get_subtotal}
-        return render(request, "index.html",contaxt) 
+        context={"uid" : uid, "mid" : mid, "product" : product,"get_color_category":get_color_category,             "get_cart":get_cart,"get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1, "get_subtotal": get_subtotal}
+        return render(request, "index.html",context) 
     else:
-        return render(request, "login.html") 
+        return render(request, "login.html")     
 
 def search(request):
     uid = signup.objects.get(email=request.session['email'])
@@ -54,9 +54,9 @@ def search(request):
         srh = request.POST['search']
         if srh:
             product = products.objects.filter(name__icontains=srh)
-        contaxt = {"product": product,"get_cart_count": get_cart_count,
+        context = {"product": product,"get_cart_count": get_cart_count,
                    "get_wishlist_count": get_wishlist_count,"get_wishlist":get_wishlist} 
-        return render(request,"index.html",contaxt)
+        return render(request,"index.html",context)
 
 def about(request):
     uid = signup.objects.get(email=request.session['email'])
@@ -76,9 +76,13 @@ def blog_detail(request):
     get_cart = add_to_cart.objects.filter(user_id=uid)
     get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
     get_wishlist = wish_list.objects.filter(user_id = uid)
+    all_product = []
+    for i in get_cart:
+        all_product.append(i.total_prize)
+    get_subtotal = sum(all_product)
 
     context = {"get_cart": get_cart,"get_cart_count": get_cart_count,
-               "get_wishlist_count":get_wishlist_count, "get_wishlist":get_wishlist} 
+               "get_wishlist_count":get_wishlist_count, "get_wishlist":get_wishlist, "get_subtotal": get_subtotal} 
     return render(request, "blog_detail.html",context)
 
 def blog(request):
@@ -87,9 +91,13 @@ def blog(request):
     get_cart = add_to_cart.objects.filter(user_id=uid)
     get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
     get_wishlist = wish_list.objects.filter(user_id = uid)
+    all_product = []
+    for i in get_cart:
+        all_product.append(i.total_prize)
+    get_subtotal = sum(all_product)
 
     context = {"get_cart": get_cart, "get_cart_count":get_cart_count,
-               "get_wishlist_count":get_wishlist_count, "get_wishlist":get_wishlist} 
+               "get_wishlist_count":get_wishlist_count, "get_wishlist":get_wishlist,"get_subtotal": get_subtotal} 
     return render(request, "blog.html",context)
 
 def contact(request):
@@ -98,6 +106,10 @@ def contact(request):
     get_cart = add_to_cart.objects.filter(user_id=uid)
     get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
     get_wishlist = wish_list.objects.filter(user_id = uid)
+    all_product = []
+    for i in get_cart:
+        all_product.append(i.total_prize)
+    get_subtotal = sum(all_product)
 
     if request.POST:
         e_mail = request.POST['email']
@@ -105,7 +117,7 @@ def contact(request):
         contacts.objects.create(email=e_mail,msg=msg)
         return redirect("contact")
     context = {"get_cart": get_cart,"get_cart_count": get_cart_count,
-               "get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist} 
+               "get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist, "get_subtotal": get_subtotal} 
     return render(request, "contact.html",context)
 
 def product_detail(request,id):
@@ -117,10 +129,14 @@ def product_detail(request,id):
     get_prodduct = products.objects.get(id=id)
     size = get_prodduct.size.all()
     color = get_prodduct.color.all()
+    all_product =[]
+    for i in get_cart:
+        all_product.append(i.total_prize)
+    get_subtotal = sum(all_product)    
 
 
     context = {"get_product" : get_prodduct, "uid" : uid,"get_cart": get_cart,"color": color,"size": size,
-               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist}
+               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,"get_subtotal": get_subtotal}
     return render(request, "product_detail.html",context) 
     
 def product(request):
@@ -134,6 +150,10 @@ def product(request):
     mid = categories.objects.all()
     product = products.objects.all()  
     sort_order = request.GET.get('sort','name_desc')
+    all_product =[]
+    for i in get_cart:
+        all_product.append(i.total_prize)
+    get_subtotal = sum(all_product)
 
     if sort_order:
         if sort_order == 'name_asc':
@@ -153,7 +173,8 @@ def product(request):
     show_page = paginator.get_elided_page_range(page_number,on_each_side=1,on_ends=1)
 
     context = {'mid' : mid , 'product' : product, "get_color_category":get_color_category,"show_page":show_page,
-               "get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1}
+               "get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,
+               "get_wishlist":get_wishlist,"get_wishlist1":get_wishlist1,"get_subtotal":get_subtotal}
     return render(request, "product.html", context)
 
 def price_filter(request):
@@ -169,6 +190,10 @@ def price_filter(request):
         get_products = products.objects.all()
         min_price = request.GET.get("min")
         max_price = request.GET.get("max")
+        all_product =[] 
+        for i in get_cart:
+            all_product.append(i.total_prize)
+        get_subtotal = sum(all_product)
 
         if not min_price and not max_price:
             return redirect("product")
@@ -178,10 +203,10 @@ def price_filter(request):
             except ValueError:
                 return redirect("product")
         
-            contaxt = {"get_products": get_products, "get_categories": get_categories, "get_color": get_color,
+            context = {"get_products": get_products, "get_categories": get_categories, "get_color": get_color,
                        "get_cart_count":get_cart_count,"get_color_category":get_color_category,"get_wishlist_count":get_wishlist_count,
-                       "get_wishlist":get_wishlist,"get_cart":get_cart} 
-            return render(request, "product.html", contaxt)
+                       "get_wishlist":get_wishlist,"get_cart":get_cart,"get_subtotal": get_subtotal} 
+            return render(request, "product.html", context)
     else:
         return render(request, "login.html")
     
@@ -197,6 +222,10 @@ def color_filter(request):
         get_color_category = color.objects.all()
         product_color = request.GET.getlist("get_color_name")
         get_products = []
+        all_product =[]
+        for i in get_cart:
+            all_product.append(i.total_prize)
+        get_subtotal = sum(all_product)
 
 
         if product_color == []:
@@ -206,9 +235,10 @@ def color_filter(request):
                 get_color_name = color.objects.get(name=i)
                 set_product_color_wise = products.objects.filter(color_id=get_color_name)
                 get_products.extend(set_product_color_wise)
-                contaxt = {"get_products": get_products,"get_categories": get_categories,"get_color_category":get_color_category,
-                       "get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,"get_cart":get_cart}  
-            return render(request, "product.html", contaxt)
+            context = {"get_products": get_products,"get_categories": get_categories,"get_color_category":get_color_category,
+                       "get_cart_count":get_cart_count,"get_wishlist_count":get_wishlist_count,"get_wishlist":get_wishlist,
+                       "get_cart":get_cart, "get_subtotal": get_subtotal}  
+            return render(request, "product.html", context)
     else:
         return render(request, "login.html")
 
@@ -306,8 +336,13 @@ def wishlist(request):
         get_cart_count = add_to_cart.objects.filter(user_id=uid).count()
         get_wishlist = wish_list.objects.filter(user_id = uid)
         get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
+        all_product =[] 
+        for i in get_cart:
+            all_product.append(i.total_prize)
+        get_subtotal = sum(all_product)
 
-        context = {"get_cart":get_cart,"get_cart_count":get_cart_count,"get_wishlist":get_wishlist,"get_wishlist_count":get_wishlist_count}
+        context = {"get_cart":get_cart,"get_cart_count":get_cart_count,"get_wishlist":get_wishlist,
+                   "get_wishlist_count":get_wishlist_count,"get_subtotal": get_subtotal}
         return render(request, "wishlist.html",context)
     else:
         return render(request,"login.htmgl")
@@ -372,20 +407,20 @@ def coupon_apply(request):
                     total_amount = total_amount - coupon_codes.discount
                     discount = coupon_codes.discount
                     request.session['discount'] = discount
-                    contaxt = {"dilivery_chag": dilivery_chag, "get_subtotal": get_subtotal, "uid": uid,
+                    context = {"dilivery_chag": dilivery_chag, "get_subtotal": get_subtotal, "uid": uid,
                                "get_cart": get_cart, "discount": discount, "total_amount": total_amount,
                                "get_cart_count": get_cart_count,"get_wishlist": get_wishlist, "get_wishlist_count": get_wishlist_count}
                     messages.success(request,"Coupon apply successfully......")
                     print(messages.success)
-                    return  render(request, "shoping_cart.html",contaxt)
+                    return  render(request, "shoping_cart.html",context)
                 else:
                     coupon_codes.delete()
-                    contaxt = {"dilivery_chag": dilivery_chag, "get_subtotal": get_subtotal, "uid": uid,
+                    context = {"dilivery_chag": dilivery_chag, "get_subtotal": get_subtotal, "uid": uid,
                                "get_cart": get_cart, "discount": discount, "total_amount": total_amount,
                                "get_cart_count": get_cart_count,"get_wishlist": get_wishlist, "get_wishlist_count": get_wishlist_count}
                     messages.success(request,"Coupon has expired and has been deleted")
                     print(messages.success)
-                    return  render(request, "shoping_cart.html",contaxt)
+                    return  render(request, "shoping_cart.html",context)
             else:
                 messages.success(request, "No Discount in this code")
                 return redirect("shoping_cart")
@@ -470,6 +505,40 @@ def address(request):
     else:
         return render(request,"login.html") 
 
+def myaccount(request):
+    if 'email' in request.session:
+        uid = signup.objects.get(email=request.session['email'])
+        get_cart  = add_to_cart.objects.filter(user_id=uid)
+        get_cart_count = add_to_cart.objects.filter(user_id=uid).count()
+        get_wishlist = wish_list.objects.filter(user_id = uid)
+        get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
+        get_address = Billing_detail.objects.filter(user_id = uid)
+
+        context = {"get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist": get_wishlist,
+                  "get_wishlist_count": get_wishlist_count,"get_address": get_address}
+                
+        return render(request,"myaccount.html", context)
+    else:
+        return render(request,"index.html") 
+
+def update_myaccount(request,id):
+    if 'email' in request.session: 
+        uid = signup.objects.get(email=request.session['email'])
+        address_id = Billing_detail.objects.get(id=id)    
+        if request.method == 'POST':
+            name = request.POST['name']
+            mobile = request.POST['mobile_number']
+
+            address_id.full_name = name 
+            address_id.mobile = mobile
+            address_id.save()
+
+
+            return redirect('myaccount') 
+        return render(request, 'myaccount.html')
+    else:
+        return render(request,"index.html")
+    
 def add_address(request):
     if 'email' in request.session:
         uid = signup.objects.get(email=request.session['email'])
@@ -494,7 +563,6 @@ def update_address(request,id):
     if 'email' in request.session:
         uid = signup.objects.get(email=request.session['email'])
         address_id = Billing_detail.objects.get(id=id)            
-        print(address_id)
         
         if request.POST:
             name = request.POST['update_name']

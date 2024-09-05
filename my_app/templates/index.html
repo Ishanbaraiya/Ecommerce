@@ -62,7 +62,7 @@
 						</a>
 
 						{% if request.session.email %}
-						<a href="#" class="flex-c-m trans-04 p-lr-25 text-decoration-none">
+						<a href="{% url 'myaccount' %}" class="flex-c-m trans-04 p-lr-25 text-decoration-none">
 							My Account
 						</a>
 							<a href="{% url 'log_out' %}" class="flex-c-m trans-04 p-lr-25 text-decoration-none">
@@ -209,7 +209,7 @@
 							</a>
 						{% endif %}
 
-						<a href="#" class="flex-c-m p-lr-10 trans-04 text-decoration-none">
+						<a href="{% url 'myaccount' %}" class="flex-c-m p-lr-10 trans-04 text-decoration-none">
 							My Account
 						</a>
 
