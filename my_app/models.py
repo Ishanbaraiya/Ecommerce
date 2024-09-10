@@ -128,7 +128,8 @@ class order(models.Model):
 class rating(models.Model):
     product_id=models.ForeignKey(products,on_delete=models.CASCADE,null=True,blank=True)         
     user_id=models.ForeignKey(signup,on_delete=models.CASCADE,null=True,blank=True) 
-    image=models.ImageField(upload_to="media",blank=True,null=True)  
+    rating_star = models.IntegerField(choices=[(i, i) for i in range(1, 6)], blank=True,null=True)
+    image=models.ImageField(upload_to="media",blank=True,null=True)
     comment=models.TextField()
     name=models.CharField(max_length=50)
     email=models.EmailField(max_length=50)

@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.utils import timezone
 import razorpay
+import math
 
 # Create your views here.
 def index(request):
@@ -22,6 +23,8 @@ def index(request):
         get_wishlist = wish_list.objects.filter(user_id = uid)
         get_wishlist1 = wish_list.objects.filter(user_id = uid).values_list('products_id',flat=True)
         all_product = []
+
+        
         for i in get_cart:
             all_product.append(i.total_prize)
         get_subtotal = sum(all_product)
@@ -128,9 +131,30 @@ def product_detail(request,id):
     get_wishlist = wish_list.objects.filter(user_id = uid)
     get_prodduct = products.objects.get(id=id)
     get_review = rating.objects.all()
+    rate_id = rating.objects.filter(product_id=get_prodduct)
+    review_count=rating.objects.all().count()
     get_review_count = rating.objects.all().count
     size = get_prodduct.size.all()
     color = get_prodduct.color.all()
+
+    l1 =[]
+    for i in rate_id:
+        l1.append(i.rating_star)
+    print(l1)
+
+    if rate_id.count() > 0:
+        a = sum(l1)/rate_id.count()#start count and sum: total stars/total reviews
+        a=round(a,1)
+        print(a)
+        a1 = math.ceil(a)  # for half star
+        print(a1)
+        get_prodduct.rating1=a
+        get_prodduct.half_rating=a1
+        get_prodduct.save()
+    else:
+        a = 0
+        a1 = 0
+        print("No ratings available")    
 
     all_product =[]
     for i in get_cart:
@@ -138,8 +162,9 @@ def product_detail(request,id):
     get_subtotal = sum(all_product)    
 
 
-    context = {"get_product" : get_prodduct, "uid" : uid,"get_cart": get_cart,"color": color,"size": size,"get_review":get_review,"get_review_count":get_review_count,
-               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,"get_subtotal": get_subtotal}
+    context = {"get_product" : get_prodduct, "uid" : uid, "get_cart": get_cart,"color": color,"size": size,"get_review":get_review,"get_review_count":get_review_count,
+               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,"get_subtotal": get_subtotal,
+               "rate_id": rate_id, "review_count": review_count, "l1": l1, "a1": a1, "a": a}
     return render(request, "product_detail.html",context) 
 
 
@@ -152,6 +177,7 @@ def ratings(request,id):
             comment = request.POST['comment']
             name = request.POST['name']
             email = request.POST['email']
+            rating_star = request.POST['rating_star']
 
         get_review = rating (
             product_id = get_prodduct,
@@ -159,7 +185,8 @@ def ratings(request,id):
             image = get_prodduct.img,
             comment = comment,
             name = name,
-            email = email
+            email = email,
+            rating_star = rating_star
         )    
         get_review.save()
 
@@ -537,6 +564,7 @@ def address(request):
 def myaccount(request):
     if 'email' in request.session:
         uid = signup.objects.get(email=request.session['email'])
+        user_id = signup.objects.all()
         get_cart  = add_to_cart.objects.filter(user_id=uid)
         get_cart_count = add_to_cart.objects.filter(user_id=uid).count()
         get_wishlist = wish_list.objects.filter(user_id = uid)
@@ -544,7 +572,7 @@ def myaccount(request):
         get_address = Billing_detail.objects.filter(user_id = uid)
 
         context = {"get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist": get_wishlist,
-                  "get_wishlist_count": get_wishlist_count,"get_address": get_address,"uid":uid}
+                  "get_wishlist_count": get_wishlist_count,"get_address": get_address,"uid":uid,"user_id": user_id}
                 
         return render(request,"myaccount.html", context)
     else:
@@ -558,10 +586,14 @@ def update_myaccount(request,id):
             name = request.POST['name']
             mobile = request.POST['mobile_number']
 
+            if 'img' in request.FILES:  # Check if an image file is uploaded
+                img = request.FILES['img']
+                uid.img = img    
+
             address_id.full_name = name 
             address_id.mobile = mobile
             address_id.save()
-
+            uid.save()
 
             return redirect('myaccount') 
         return render(request, 'myaccount.html')
@@ -658,6 +690,7 @@ def creates(request):
         email = request.POST['email']
         password = request.POST['password']
         c_password = request.POST['c_password']
+        img = ('static/images/user.png')
         response = requests.get(f"https://emailvalidation.abstractapi.com/v1/?api_key=6089bc4afeb248cfbae263ac6dd99ef8&email={email}")
 
         try:
@@ -687,7 +720,7 @@ def creates(request):
                                     message_for_password_critearia = "please create a strong password !"
                                     return render(request,"signups.html",{"message_for_password_critearia":message_for_password_critearia})
                                 else:
-                                    signup.objects.create(name=name,email=email,password=password)
+                                    signup.objects.create(name=name,email=email,password=password,img=img)
                                     messages.success(request,'Registration are successfully completed.')
                                     return redirect("login")
                             else:
