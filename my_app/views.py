@@ -127,18 +127,47 @@ def product_detail(request,id):
     get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
     get_wishlist = wish_list.objects.filter(user_id = uid)
     get_prodduct = products.objects.get(id=id)
+    get_review = rating.objects.all()
+    get_review_count = rating.objects.all().count
     size = get_prodduct.size.all()
     color = get_prodduct.color.all()
+
     all_product =[]
     for i in get_cart:
         all_product.append(i.total_prize)
     get_subtotal = sum(all_product)    
 
 
-    context = {"get_product" : get_prodduct, "uid" : uid,"get_cart": get_cart,"color": color,"size": size,
+    context = {"get_product" : get_prodduct, "uid" : uid,"get_cart": get_cart,"color": color,"size": size,"get_review":get_review,"get_review_count":get_review_count,
                "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,"get_subtotal": get_subtotal}
     return render(request, "product_detail.html",context) 
-    
+
+
+def ratings(request,id):
+    uid = signup.objects.get(email=request.session['email'])
+    get_prodduct = products.objects.get(id=id)
+
+    if 'email' in request.session:
+        if request.POST:
+            comment = request.POST['comment']
+            name = request.POST['name']
+            email = request.POST['email']
+
+        get_review = rating (
+            product_id = get_prodduct,
+            user_id = uid,
+            image = get_prodduct.img,
+            comment = comment,
+            name = name,
+            email = email
+        )    
+        get_review.save()
+
+        return redirect('product')
+    else:
+        return redirect('login')
+        
+
 def product(request):
     uid = signup.objects.get(email=request.session['email'])
     get_cart = add_to_cart.objects.filter(user_id=uid)
@@ -515,7 +544,7 @@ def myaccount(request):
         get_address = Billing_detail.objects.filter(user_id = uid)
 
         context = {"get_cart": get_cart,"get_cart_count":get_cart_count,"get_wishlist": get_wishlist,
-                  "get_wishlist_count": get_wishlist_count,"get_address": get_address}
+                  "get_wishlist_count": get_wishlist_count,"get_address": get_address,"uid":uid}
                 
         return render(request,"myaccount.html", context)
     else:
@@ -760,5 +789,9 @@ def check_otp(request):
             message_for_email = "Email does not exist"
             return render(request, "reset_pass.html", {"message_for_email": message_for_email, "otp": otp})
     else:
-        return render(request, "reset_pass.html")    
+        return render(request, "reset_pass.html")   
+
+
+
+
 # ---------------------------------------------------------------------------------------------------------------

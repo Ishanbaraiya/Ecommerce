@@ -59,6 +59,9 @@
                             {% for i in get_address %}
                         <div class="card rounded-0 mb-3">
                             <div class="card-body">
+                                <div class="mb-3 text-center">
+                                    <img src="{{ uid.img.url }}" alt="Profile Image" class="img-thumbnail" width="150" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+                                </div>
                                 <div class="mb-3">
                                     <label class="fw-bold">Full Name:</label>
                                     <p>{{i.full_name}}</p>
@@ -66,7 +69,7 @@
                                 <div class="mb-3">
                                     {% if request.session.email %}
                                     <label class="fw-bold">Email:</label>
-                                    <p>{{request.session.email }}</p>
+                                    <p>{{request.session.email}}</p>
                                     {% endif %}
                                 </div>
                                 <div class="mb-3">
@@ -83,13 +86,17 @@
             <!-- Edit User Information (Edit Mode) -->
             {% for i in get_address%}
             <div id="editForm" style="display: none;">
-                <form id="editProfileForm" action="{% url 'update_myaccount' i.id %}" method="POST">
+                <form id="editProfileForm" action="{% url 'update_myaccount' i.id %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row g-4">
                         <div class="col-12 col-lg-8 col-xl-8">
                             <h6 class="fw-bold mb-3 py-2 px-3 bg-light">Edit Personal Information</h6>
                             <div class="card rounded-0 mb-3">
                                 <div class="card-body">
+                                    <div class="mb-3 text-center">
+                                        <img src="{{ uid.img.url }}" alt="Profile Image" class="img-thumbnail mb-3" width="150" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+                                        <input type="file" class="form-control" name="profile_image">
+                                    </div>
                                     <div class="mb-3">
                                         <label class="fw-bold">Full Name:</label>
                                         <input type="text" class="form-control" name="name" value="{{ i.full_name }}">

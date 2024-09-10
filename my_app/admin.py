@@ -26,3 +26,5 @@ admin.site.register(coupon_code)
 admin.site.register(Billing_detail)
 
 admin.site.register(order)
+
+admin.site.register(rating)

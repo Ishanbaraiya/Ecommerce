@@ -20,7 +20,7 @@ from django.urls import path,include
 from my_app import views as hv 
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
 
     path('',hv.index ,name='index'),
     path('about',hv.about, name='about'),
@@ -54,5 +54,6 @@ urlpatterns = [
     path('update_address/<int:id>',hv.update_address, name='update_address'),
     path('add_quantity/<int:id>',hv.add_quantity, name='add_quantity'),
     path('minus_quantity/<int:id>',hv.minus_quantity, name='minus_quantity'),
+    path('ratings/<int:id>',hv.ratings, name='ratings'),
 
 ]

@@ -9,6 +9,8 @@ class signup(models.Model):
     email=models.EmailField(unique=True,blank=True,null=True)
     otp=models.CharField(max_length=6,default=0,blank=True,null=True)
     password=models.CharField(max_length=30, null=True)
+    img = models.ImageField(upload_to="media", blank=True, null=True)
+
 
     def __str__(self) -> str:
         return self.name
@@ -122,3 +124,15 @@ class order(models.Model):
     def __str__(self) -> str:
         return self.name
        
+
+class rating(models.Model):
+    product_id=models.ForeignKey(products,on_delete=models.CASCADE,null=True,blank=True)         
+    user_id=models.ForeignKey(signup,on_delete=models.CASCADE,null=True,blank=True) 
+    image=models.ImageField(upload_to="media",blank=True,null=True)  
+    comment=models.TextField()
+    name=models.CharField(max_length=50)
+    email=models.EmailField(max_length=50)
+    date=models.DateTimeField(auto_now=True,blank=True,null=True) 
+
+    def __str__(self) -> str:
+        return self.name       
