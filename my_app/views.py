@@ -129,13 +129,13 @@ def product_detail(request,id):
     get_cart = add_to_cart.objects.filter(user_id=uid)
     get_wishlist_count = wish_list.objects.filter(user_id=uid).count()
     get_wishlist = wish_list.objects.filter(user_id = uid)
-    get_prodduct = products.objects.get(id=id)
+    get_product = products.objects.get(id=id)
     get_review = rating.objects.all()
-    rate_id = rating.objects.filter(product_id=get_prodduct)
+    rate_id = rating.objects.filter(product_id=get_product)
     review_count=rating.objects.all().count()
     get_review_count = rating.objects.all().count
-    size = get_prodduct.size.all()
-    color = get_prodduct.color.all()
+    size = get_product.size.all()
+    color = get_product.color.all()
 
     l1 =[]
     for i in rate_id:
@@ -148,22 +148,22 @@ def product_detail(request,id):
         print(a)
         a1 = math.ceil(a)  # for half star
         print(a1)
-        get_prodduct.rating1=a
-        get_prodduct.half_rating=a1
-        get_prodduct.save()
+        get_product.rating1=a
+        get_product.half_rating=a1
+        get_product.save()
     else:
         a = 0
         a1 = 0
         print("No ratings available")    
 
-    all_product =[]
-    for i in get_cart:
-        all_product.append(i.total_prize)
-    get_subtotal = sum(all_product)    
+    # all_product =[]
+    # for i in get_cart:
+    #     all_product.append(i.total_prize)
+    # get_subtotal = sum(all_product)    
 
 
-    context = {"get_product" : get_prodduct, "uid" : uid, "get_cart": get_cart,"color": color,"size": size,"get_review":get_review,"get_review_count":get_review_count,
-               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,"get_subtotal": get_subtotal,
+    context = {"get_product" : get_product, "uid" : uid, "get_cart": get_cart,"color": color,"size": size,"get_review":get_review,"get_review_count":get_review_count,
+               "get_cart_count": get_cart_count,"get_wishlist_count":get_wishlist_count, "get_wishlist": get_wishlist,
                "rate_id": rate_id, "review_count": review_count, "l1": l1, "a1": a1, "a": a}
     return render(request, "product_detail.html",context) 
 

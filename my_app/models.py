@@ -46,6 +46,8 @@ class products(models.Model):
     quantity = models.IntegerField(default=1,blank=True, null=True)
     img = models.ImageField(upload_to="media", blank=True, null=True)
     color = models.ManyToManyField(color_cart,blank=True,null=True)
+    rating1= models.IntegerField(blank=True, null=True)
+    half_rating= models.IntegerField(blank=True, null=True)
     size = models.ManyToManyField(size_cart,blank=True,null=True)
     price = models.IntegerField()
     description = models.TextField()

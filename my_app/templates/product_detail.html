@@ -65,6 +65,18 @@
 					
 				<div class="col-md-6 col-lg-5 p-b-30">
 					<div class="p-r-50 p-t-5 p-lr-0-lg">
+						<span class="fs-18 cl11">
+							{% for i in '12345' %}
+							{% if forloop.counter <= a %}
+							
+							<i class="zmdi zmdi-star"></i>
+							{% elif forloop.counter == a1 %}
+							<i class="zmdi zmdi-star-half"></i>
+							{% else %}
+							<i class="zmdi zmdi-star-outline"></i>
+							{% endif %}
+							{% endfor %}
+						</span>
 						<h4 class="mtext-105 cl2 js-name-detail p-b-14">
 							{{ get_product.name }}
 						</h4>
@@ -269,7 +281,7 @@
 														{{i.name}}
 													</span>
 
-													<span class="fs-18 cl11">
+													<!-- <span class="fs-18 cl11">
 														{% for i in '12345' %}
 														{% if forloop.count <= a %}
 														<i class="zmdi zmdi-star-outline"></i>
@@ -279,7 +291,7 @@
 														<i class="zmdi zmdi-star"></i>
 														{% endif %}
 														{% endfor %}
-													</span>
+													</span> -->
 												</div>
 
 												<p class="stext-102 cl6">
